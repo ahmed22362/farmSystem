@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            direction: rtl;
+            text-align: right;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            padding: 20px 40px;
+            margin: 15px;
+            font-size: 18px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            clearBackStack();
+        });
+
+        function clearBackStack() {
+            if (window.history && window.history.pushState) {
+                window.history.pushState(null, null, window.location.href);
+                window.addEventListener('popstate', function () {
+                    window.history.pushState(null, null, window.location.href);
+                });
+            }
+        }
+    </script>
+    <h1>مرحبا بك في مزرعتنا</h1>
+
+    <div class="button-container">
+        <a href="/meat_cows" class="button">اظهر بقر اللحوم</a>
+        <a href="/milk_cows" class="button">اظهر بقر الحلب</a>
+        <a href="/milking" class="button">احصائية الالبان</a>
+        <a href="/notYet" class="button">العليفة</a>
+        <a href="/notYet" class="button">سجل وزن</a>
+    </div>
+</body>
+</html>

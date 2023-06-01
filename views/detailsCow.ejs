@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>التفاصيل</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            direction: rtl;
+            text-align: right;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+
+        }
+
+        .details-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: right;
+        }
+
+        .details-container .details-pair {
+            margin-bottom: 10px;
+        }
+
+        .details-container .details-pair label {
+            display: inline-block;
+            width: 150px;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .details-container .details-pair p {
+            display: inline-block;
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .button-container button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .button-container button.edit {
+            background-color: #2196f3;
+        }
+
+        .button-container button.delete {
+            background-color: #f44336;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>عرض بيانات البقرة</h1>
+
+    <div class="details-container">
+        <div class="details-pair">
+            <label>كود الحيوان:</label>
+            <p><%= animal.id %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>السلالة:</label>
+            <p><%= animal.strain %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>الوزن:</label>
+            <p><%= animal.weight %> KG</p>
+        </div>
+        <% if (typeof meatCow!== 'undefined') { %>
+            <div class="details-pair">
+                <label>النوع:</label>
+                <p><%= animal.gender %></p>
+            </div>    
+        <% } %>
+
+        <div class="details-pair">
+            <label>تاريخ الميلاد:</label>
+            <p><%= animal.birth_date %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>الملكية:</label>
+            <p><%= animal.ownership %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>كود الاب:</label>
+            <p><%= animal.father_code %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>كود الام:</label>
+            <p><%= animal.mother_code %></p>
+        </div>
+        <div class="details-pair">
+            <label>التحصينات:</label>
+            <p><%= animal.immunizations %></p>
+        </div>
+        <div class="details-pair">
+            <label>الامراض:</label>
+            <p><%= animal.diseases %></p>
+        </div>
+
+        <div class="details-pair">
+            <label>ملاحظات:</label>
+            <p><%= animal.notes %></p>
+        </div>
+        <% if (typeof milkCow !== 'undefined') { %>
+            
+        <div class="details-pair">
+            <label>وقت اخر تلقيح:</label>
+            <p><%= animal.last_pollination_time %></p>
+        </div>
+        <div class="details-pair">
+            <label>كود الحيوان الملقح:</label>
+            <p><%= animal.code_of_pollinated_animal %></p>
+        </div>
+        <div class="details-pair">
+            <label>عدد التحصينات:</label>
+            <p><%= animal.number_of_pollination %></p>
+        </div>
+        <div class="details-pair">
+            <label>موعد الشياع:</label>
+            <p><%= animal.estrus %></p>
+        </div>
+        <div class="details-pair">
+            <label>الكفائة التناسلية للبقرة:</label>
+            <p><%= animal.reproductive_competence %></p>
+        </div>
+        <% } %>
+        
+        <div class="button-container">
+            <% if (typeof meatCow !== 'undefined') { %>
+                <button class="edit" onclick="location.href='http://localhost:3000/meat_cows/update/?id=<%= animal.id %>';">تعديل</button>
+                <form action="http://localhost:3000/meat_cows/delete" method="post">
+                    <input type="hidden" name="id" value= "<%= animal.id %>" /> 
+                    <button class="delete" type="submit">مسح</button>
+                </form> 
+            <% } else if(typeof milkCow !== 'undefined') { %>
+                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/update/?id=<%= animal.id %>';">تعديل</button>
+                <form action="http://localhost:3000/milk_cows/delete" method="post">
+                    <input type="hidden" name="id" value= "<%= animal.id %>" /> 
+                    <button class="delete" type="submit">مسح</button>
+                </form> 
+                <button class="edit" onclick="http://localhost:3000/milk">اضف حلبة</button>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        function deleteAnimal(animalId) {
+            if (confirm('Are you sure you want to delete this animal?')) {
+                fetch(`/meat_cows/${animalId}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => {
+                    if (response.ok) {
+                        console.log(`Deleted meat cow with ID ${animalId}`);
+                        // Perform any desired actions after successful deletion
+                    } else {
+                        console.error(`Failed to delete meat cow with ID ${animalId}`);
+                    }
+                    window.location.href = 'http://localhost:3000/meat_cows';
+                    })
+                    .catch(error => {
+                    console.error(`Error deleting meat cow with ID ${animalId}:`, error);
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

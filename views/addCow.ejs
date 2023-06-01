@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Meat Cow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: right;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        select, input[type="number"], input[type="date"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            direction: rtl;
+            text-align: right;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .right-aligned {
+            direction: rtl;
+            text-align: right;
+        }
+        .input-pair {
+            display: none;
+        }
+
+    </style>
+
+<script>
+    function handleOptionChange() {
+      var select = document.getElementById("mySelect");
+      var inputPairBirth = document.getElementById("inputPairBirth");
+      var inputPairBuy = document.getElementById("inputPairBuy");
+      var otherField = document.getElementById("otherField");
+
+      if (select.value === "ولادة") {
+        inputPairBirth.style.display = "block";
+        inputPairBuy.style.display = "none";
+        otherField.style.display ="none"
+      } else if (select.value === "شراء") {
+          inputPairBuy.style.display = "block";
+        inputPairBirth.style.display = "none";
+        otherField.style.display ="none"
+      } else if (select.value === "اخرى") {
+        otherField.style.display ="block"
+        inputPairBirth.style.display = "none";
+        inputPairBuy.style.display = "none";
+      }
+    }
+  </script>
+</head>
+<body>
+    <h1>إضافة بقر </h1>
+
+    <form  <% if (typeof meatCow !== 'undefined'){ %>
+        action="/meat_cows"
+      <% } else { %>
+        action="/milk_cows"
+      <% } %> method="post">
+
+		<label for="strain">:السلالة</label>
+        <select name="strain" class="right-aligned" required>
+            <% if (typeof meatCow !== 'undefined'){ %>
+                <option value="السيمنتال">السيمنتال </option>
+                <option value="الشاروليه">الشاروليه</option>
+                <option value="الانجص">الانجص</option>
+                <option value="الليموزين">الليموزين</option>
+              <% } else if(typeof milkCow !== 'undefined') { %>
+                <option value="هولشتاين">هولشتاين </option>
+                <option value="الجيرسي">الجيرسي</option>
+                <option value="السيمنتال">السيمنتال</option>
+                <option value="المونبليارد">المونبليارد</option>
+                <option value="فريزيان">فريزيان</option>
+                <option value="جنرسي">جنرسي</option>
+              <% } %>
+
+        </select><br>
+
+        <label for="ownership">:اقتناء الحيوان</label>
+        <select name="ownership" id="mySelect" onchange="handleOptionChange()">
+            <option value="ولادة" >ولادة</option>
+            <option value="شراء">شراء</option>
+            <option value="اخرى">اخرى</option>
+          </select>
+        
+          <div id="inputPairBirth" >
+            <label for="weight_on_birth">:الوزن عند الولادة</label>
+            <input id ="weightBirth" type="number" class="right-aligned"  name="weight_on_birth" step="1"  ><br>
+            <label for="birth_date">:تاريخ الميلاد</label>
+            <input type="date" class="right-aligned"  name="birth_date"><br>
+            <label for="father_code">:كود الاب</label>
+            <input type="text" class="right-aligned"  name="father_code"><br>
+            <br>
+            <label for="mother_code">:كود الام</label>
+            <input type="text" class="right-aligned"  name="mother_code"><br>
+            <br>
+          </div>
+        
+          <div id="inputPairBuy" class="input-pair">
+            <label for="weight_on_buy">:الوزن عند الشراء</label>
+            <input type="number" class="right-aligned"  name="weight_on_buy" step="1" ><br>
+            <label for="buy_date">:تاريخ الشراء</label>
+            <input type="date" class="right-aligned"  name="date_of_buy"><br>
+          </div>
+          <div id="otherField" class="input-pair">
+            <label for="other">:اخرى</label>
+            <input type="text" name="ownership"><br>
+          </div>
+        <br>
+        <label for="weight">:الوزن الأن</label>
+        <input type="number" class="right-aligned"  name="weight" step="1" required><br>
+            
+        <% if (typeof meatCow !== 'undefined') { %>
+          <label for="weight">:النوع</label>
+          <select name="gender" class="right-aligned" required>
+              <option value="ذكر">ذكر </option>
+              <option value="انثى">انثى</option>
+          </select><br>
+        <% } %>
+        <label for="diseases">:التحصينات</label>
+        <textarea type="text" class="right-aligned" rows="2" name="diseases"></textarea><br>
+        <br>
+        <label for="immunizations">:الامراض</label>
+        <textarea type="text" class="right-aligned" rows="2"  name="immunizations"></textarea><br>
+        <br>
+        <label for="notes">:ملاحظات</label>
+        <textarea name="notes" class="right-aligned"  rows="4"></textarea><br>
+
+        <% if (typeof milkCow !== 'undefined') { %>
+          <label for="last_pollination_time">:وقت اخر تلقيح</label>
+          <input type="date" class="right-aligned"  name="last_pollination_time"><br>
+          <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
+          <textarea type="text" class="right-aligned" rows="1"  name="code_of_pollinated_animal"></textarea><br>
+          <label for="number_of_pollination">:عدد التحصينات</label>
+          <input type="number" class="right-aligned"  name="number_of_pollination"><br>
+          <label for="estrus">:موعد الشياع</label>
+          <input type="date" class="right-aligned"  name="estrus"><br>
+          <label for="reproductive_competence">:الكفائة التناسلية للبقرة</label>
+          <input type="number" class="right-aligned"  name="reproductive_competence"><br>
+          <% } %>
+        <button type="submit">إضافة</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!-- Dashboard EJS template -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>احصائية اللبن</title>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card {
+            width: 200px;
+            height: 150px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #dddddd;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>عدد الاقار المحلوبة</h2>
+            <p><%= milkingCowsCount %></p>
+        </div>
+        <div class="card">
+            <h2>عدد اليترات المحلوبة</h2>
+            <p><%= milkingLitersAmount %></p>
+        </div>
+        <div class="card">
+            <h2>متوسط وقت الحلب</h2>
+            <p><%= averageMilkingTime %></p>
+        </div>
+        <div class="card">
+            <h2>اعلى كمية محلوبة</h2>
+            <p><%= highestMilkProduction %></p>
+        </div>
+        <div class="card" onclick="showMilkingRecords()">
+            <h2>جميع البيانات</h2>
+        </div>
+    </div>
+
+    <div id="milkingRecords" style="display: none;">
+        <h2>جميع بيانات الحلب</h2>
+        <ul>
+            <% milkingRecords.forEach(function(record) { %>
+                <li><%= record %></li>
+            <% }); %>
+        </ul>
+    </div>
+
+    <script>
+        function showMilkingRecords() {
+            var milkingRecordsDiv = document.getElementById("milkingRecords");
+            milkingRecordsDiv.style.display = "block";
+        }
+    </script>
+</body>
+</html>

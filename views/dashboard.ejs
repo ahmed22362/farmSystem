@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>HOME</title>
+</head>
+<style>
+	.container {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.container button {
+		padding: 10px 20px;
+		border: none;
+		border-radius: 4px;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+
+	.container button.edit {
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	.container button.add {
+		background-color: #2196F3;
+		color: white;
+	}
+
+	table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 100%;
+		direction: rtl;
+        text-align: right;
+	}
+
+	td,
+	th {
+		border: 1px solid #dddddd;
+		text-align: right;
+		padding: 8px;
+	}
+
+	tr:nth-child(even) {
+		background-color: #dddddd;
+	}
+</style>
+
+<body>
+	<div class="container">
+		<h1>كل الحيوانات</h1>
+		<% if (typeof meatCow !== 'undefined') { %>
+			<button class="add" onclick="location.href=`http://localhost:3000/meat_cows/add`;">إضافة</button>
+		<% } else { %>
+			<button class="add" onclick="location.href='notyet';">إضافة</button>
+		<% } %>
+	</div>
+	<table>
+		<tr>
+			<th>كود الحيوان</th>
+			<th>السلالة</th>
+			<th>الوزن</th>
+			<th>الجنس</th>
+			<th>تاريخ الميلاد</th>
+			<th>الملكية</th>
+			<th>اسم الأب</th>
+			<th>اسم الأم</th>
+			<th>ملاحظات</th>
+			<th>تعديل</th>
+			<th>مسح</th>
+		</tr>
+		<% data.forEach(element => { %>
+			<tr>
+				<td>
+					<%= element.id %>
+				</td>
+				<td>
+					<%= element.strain %>
+				</td>
+				<td>
+					<%= element.weight %> KG
+				</td>
+				<td>
+					<%= element.gender %>
+				</td>
+				<td>
+					<%= element.birth_date %>
+				</td>
+				<td>
+					<%= element.ownership %>
+				</td>
+				<td>
+					<%= element.father_name %>
+				</td>
+				<td>
+					<%= element.mother_name %>
+				</td>
+				<td>
+					<%= element.notes %>
+				</td>
+				<td>
+					<form action="http://localhost:3000/meat_cows/update" method="get">
+						<input type="hidden" name="id" value= "<%= element.id %>" /> 
+						<button type="submit">تعديل</button>
+					</form>
+				</td>
+				<td>
+					<form action="/delete" method="post">
+						<input type="text" style="display: none;" name="id" value="<%= element.id %>">
+						<button type="submit">مسح</button>
+					</form>
+				</td>
+			</tr>
+		<% }) %>
+	</table>
+</body>
+
+</html>
