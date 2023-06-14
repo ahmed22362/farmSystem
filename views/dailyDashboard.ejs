@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>details</title>
+</head>
+<style>
+	body {
+		<% if (typeof weight !== 'undefined' ){ %>
+			background-image: url('/weight.jpg');
+		<% } else if (typeof fodder !== 'undefined' ){ %>
+			background-image: url('/fodder2.jpg');
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+ 			background-size: cover;
+
+		<% } %>
+	}
+	.container {
+		text-align: center;
+		margin-bottom: 20px;
+	}
+
+	.container button {
+		padding: 10px 20px;
+		border: none;
+		border-radius: 4px;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+
+	.container button.edit {
+		background-color: #4CAF50;
+		color: white;
+	}
+
+	.container button.add {
+		background-color: #2196F3;
+		color: white;
+	}
+
+	table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 90%;
+		direction: rtl;
+		margin-left: auto;
+  		margin-right: auto;
+		background-color:white;
+	}
+
+	td,
+	th {
+		border: 1px solid #dddddd;
+		text-align: right;
+		padding: 8px;
+	}
+
+	tr:nth-child(even) {
+		background-color: #dddddd;
+	}
+</style>
+
+<body>
+	<div class="container">
+		<% if (typeof weight !== 'undefined' ){ %>
+			<h1>سجل الاوزان</h1>
+		<% } else if (typeof fodder !== 'undefined' ){ %>
+			<h1>سجل استهلاك العلف</h1>
+		<% } else if (typeof milking !== 'undefined' ){ %>
+			<h1>سجل الحلب</h1>
+		<% } else if (typeof reproduction !== 'undefined' ){ %>
+			<h1>سجل التناسل</h1>
+		<% } %> 
+	</div>
+	<table>
+		<tr>
+			<% if (typeof weight !== 'undefined' ){ %>
+				<th>كود البقرة</th>
+				<th>الوزن</th>
+				<th>التاريخ المأخوذ فيه الوزن</th>
+				<th></th>
+				<th></th>
+			<% } else if (typeof fodder !== 'undefined' ){ %>
+				<th>كود البقرة</th>
+				<th>كمية العلفة المأكولة</th>
+				<th>تاريخ اليوم المستهلك فيه</th>
+				<th></th>
+				<th></th>
+			<% } else if (typeof milking !== 'undefined' ){ %>
+				<th>كود البقرة</th>
+				<th>كمية اللبن المحلوبة</th>
+				<th>وقت الحلب</th>
+				<th></th>
+				<th></th>
+			<% } else if (typeof reproduction !== 'undefined' ){ %>
+				<th>كود البقرة</th>
+				<th>كود الحيوان الملقح</th>
+				<th>عدد مرات التلقيح</th>
+				<th>عدد مرات الولادة</th>
+				<th>تاريخ الولادة</th>
+				<th>ميعاد الشياع</th>
+				<th>ميعاد التخصيب</th>
+				<th>الكفائة التناسلية</th>
+				<th></th>
+				<th></th>
+			<% } %>
+		</tr>
+		<% records.forEach(records => { %>
+			<tr>
+				<% if (typeof weight !== 'undefined' ){ %>
+					<td><%= records.cow_id %></td>
+					<td><%= records.weight %> KG</td>
+					<td><%= records.measurement_date %></td>
+				<% } else if (typeof fodder !== 'undefined' ){ %>
+					<td><%= records.cow_id %></td>
+					<td><%= records.fodder_amount %> KG</td>
+					<td><%= records.feeding_date %></td>
+				<% } else if (typeof milking !== 'undefined' ){ %>
+					<td><%= records.cow_id %></td>
+					<td><%= records.milk_amount %> KG</td>
+					<td><%= records.milking_datetime %></td>
+				<% } else if (typeof reproduction !== 'undefined' ){ %>
+					<td><%= records.cow_id %></td>
+					<td><%= records.code_of_pollinated_animal %></td>
+					<td><%= records.number_of_pollination %></td>
+					<td><%= records.number_of_births %></td>
+					<td><%= records.date_of_births %></td>
+					<td><%= records.date_of_estrus %></td>
+					<td><%= records.date_of_insemination %></td>
+					<td><%= records.reproductive_competence %></td>
+				<% } %>
+				<td>
+					<form action="http://localhost:3000/<%=first%>/<%=second%>/update" method="get">
+						<input type="hidden" name="id" value="<%= records.id %>" />
+						<input type="text" style="display: none;" name="cow_id" value="<%= records.cow_id %>">
+						<button type="submit">تعديل</button>
+					</form>
+				</td>
+				<td>
+					<form action="http://localhost:3000/<%=first%>/<%=second%>/delete" method="post">
+						<input type="text" style="display: none;" name="id" value="<%= records.id %>">
+						<input type="text" style="display: none;" name="cow_id" value="<%= records.cow_id %>">
+						<button type="submit">مسح</button>
+					</form>
+				</td>
+			</tr>
+		<% }) %>
+	</table>
+</body>
+</html>

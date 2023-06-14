@@ -60,7 +60,17 @@
         .input-pair {
             display: none;
         }
-
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2196F3;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 
 <script>
@@ -87,12 +97,15 @@
   </script>
 </head>
 <body>
+
+  <button class="back-button" onclick="location.href='<%= typeof meatCow !== 'undefined' ? 'http://localhost:3000/meat_cows' : 'http://localhost:3000/milk_cows' %>'">رجوع</button>
+
     <h1>إضافة بقر </h1>
 
     <form  <% if (typeof meatCow !== 'undefined'){ %>
-        action="/meat_cows"
+        action="http://localhost:3000/meat_cows/add"
       <% } else { %>
-        action="/milk_cows"
+        action="http://localhost:3000/milk_cows/add"
       <% } %> method="post">
 
 		<label for="strain">:السلالة</label>
@@ -164,16 +177,8 @@
         <textarea name="notes" class="right-aligned"  rows="4"></textarea><br>
 
         <% if (typeof milkCow !== 'undefined') { %>
-          <label for="last_pollination_time">:وقت اخر تلقيح</label>
-          <input type="date" class="right-aligned"  name="last_pollination_time"><br>
-          <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
-          <textarea type="text" class="right-aligned" rows="1"  name="code_of_pollinated_animal"></textarea><br>
-          <label for="number_of_pollination">:عدد التحصينات</label>
-          <input type="number" class="right-aligned"  name="number_of_pollination"><br>
-          <label for="estrus">:موعد الشياع</label>
-          <input type="date" class="right-aligned"  name="estrus"><br>
-          <label for="reproductive_competence">:الكفائة التناسلية للبقرة</label>
-          <input type="number" class="right-aligned"  name="reproductive_competence"><br>
+          <label for="date_of_first_birth">:تاريخ اول ولادة</label>
+          <input type="date" class="right-aligned"  name="date_of_first_birth"><br>
           <% } %>
         <button type="submit">إضافة</button>
     </form>

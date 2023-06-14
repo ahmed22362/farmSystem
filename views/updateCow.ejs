@@ -112,9 +112,6 @@
             <% } %>
             </select>
 
-			<label for="weight">الوزن:</label>
-			<input type="number" id="weight" name="weight" value="<%= animal.weight %>" required>
-            <br>
             <% if (typeof meatCow !== 'undefined') { %>
                 <label for="weight">:النوع</label>
                 <select name="gender" class="right-aligned" required>
@@ -163,16 +160,19 @@
 			<textarea id="notes" name="notes"><%= animal.notes %></textarea>
 
             <% if (typeof milkCow !== 'undefined') { %>
-            <label for="last_pollination_time">:وقت اخر تلقيح</label>
-            <input type="date" class="right-aligned"  name="last_pollination_time" value="<%= animal.last_pollination_time %>"><br>
-            <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
+            <label for="weight">الوزن:</label>
+			<input type="number" id="weight" name="weight" value="<%= animal.weight %>" required>
+            <br>
+            <label for="date_of_first_birth">:تاريخ اول ولادة</label>
+            <input type="date" class="right-aligned"  name="date_of_first_birth" value="<%= animal.date_of_first_birth %>"><br>
+            <!-- <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
             <textarea type="text" class="right-aligned" rows="1"  name="code_of_pollinated_animal"><%= animal.code_of_pollinated_animal %></textarea><br>
             <label for="number_of_pollination">:عدد التحصينات</label>
             <input type="number" class="right-aligned"  name="number_of_pollination" value="<%= animal.number_of_pollination %>"><br>
             <label for="estrus">:موعد الشياع</label>
             <input type="date" class="right-aligned"  name="estrus" value="<%= animal.estrus %>"><br>
             <label for="reproductive_competence">:الكفائة التناسلية للبقرة</label>
-            <input type="number" class="right-aligned"  name="reproductive_competence" value="<%= animal.reproductive_competence %>"><br>
+            <input type="number" class="right-aligned"  name="reproductive_competence" value="<%= animal.reproductive_competence %>"><br> -->
             <% } %>
 			<button type="submit">حفظ التعديلات</button>
 		</form>

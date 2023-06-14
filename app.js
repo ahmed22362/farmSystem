@@ -2,12 +2,13 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const path = require("path")
 const open = require("openurl")
-const { db, closeDB } = require("./db/farmDB")
+const { closeDB } = require("./db/farmDB")
 const morgan = require("morgan")
 const useRouter = require("./router/userRouter")
 const meatCowRouter = require("./router/meatCowRouter")
 const milkCowRouter = require("./router/milkCowRouter")
 const milkingRouter = require("./router/milkingRouter")
+const dietsRouter = require("./router/dietsRouter")
 
 let user
 // db.all(`SELECT * FROM users`, (err, rows) => {
@@ -38,6 +39,7 @@ app.use("/home", function (req, res) {
 app.use("/meat_cows", meatCowRouter)
 app.use("/milk_cows", milkCowRouter)
 app.use("/milking", milkingRouter)
+app.use("/diets", dietsRouter)
 
 app.use("/user", useRouter)
 

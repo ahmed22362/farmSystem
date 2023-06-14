@@ -1,17 +1,34 @@
 const express = require("express")
+const milkingAnalysisController = require("./../controller/milkingAnalysisController")
 const router = express.Router()
-const milkingCowsCount = 10
-const milkingLitersAmount = 500
-const averageMilkingTime = 5
-const highestMilkProduction = 20
-const milkingRecords = ["Record 1", "Record 2", "Record 3"]
-router.route("/").get((req, res) => {
+
+router.route("/").get(async (req, res) => {
+  const count = await milkingAnalysisController.getCountOfMilkedCows()
+  const milkCount = await milkingAnalysisController.getMilkingAmount()
+  const highest = await milkingAnalysisController.getHighestMilkProduction()
+  const records = await milkingAnalysisController.getAllMilkingRecords()
+
+  const options = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    locale: "ar",
+  }
+
+  const label = JSON.stringify(
+    records.map((obj) =>
+      new Date(obj.milking_datetime).toLocaleDateString("ar", options)
+    )
+  )
+  const data = JSON.stringify(records.map((obj) => obj.milk_amount))
+
   res.render("milkDashboard", {
-    milkingCowsCount,
-    milkingLitersAmount,
-    averageMilkingTime,
-    highestMilkProduction,
-    milkingRecords,
+    milkingCowsCount: count,
+    milkingLitersAmount: milkCount,
+    highestMilkProduction: highest,
+    milkingRecords: records,
+    label: label,
+    data,
   })
 })
 module.exports = router

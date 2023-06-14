@@ -1,4 +1,3 @@
-<!-- Dashboard EJS template -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,21 +26,43 @@
         .card:hover {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        
+        #lineChart {
+            width: 60%;
+            height: 60%;
+            margin: 20px auto;
+        }
+        table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 90%;
+		direction: rtl;
+		margin-left: auto;
+  		margin-right: auto;
+		background-color:white;
+        }
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: right;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h2>عدد الاقار المحلوبة</h2>
+            <h2>عدد الابقار المحلوبة</h2>
             <p><%= milkingCowsCount %></p>
         </div>
         <div class="card">
             <h2>عدد اليترات المحلوبة</h2>
             <p><%= milkingLitersAmount %></p>
-        </div>
-        <div class="card">
-            <h2>متوسط وقت الحلب</h2>
-            <p><%= averageMilkingTime %></p>
         </div>
         <div class="card">
             <h2>اعلى كمية محلوبة</h2>
@@ -52,16 +73,83 @@
         </div>
     </div>
 
-    <div id="milkingRecords" style="display: none;">
-        <h2>جميع بيانات الحلب</h2>
-        <ul>
-            <% milkingRecords.forEach(function(record) { %>
-                <li><%= record %></li>
-            <% }); %>
-        </ul>
+    <div id="lineChartContainer">
+        <canvas id="lineChart"></canvas>
     </div>
 
+    <div id="milkingRecords" style="display: none;">
+        <h2 style="text-align:center ;">جميع بيانات الحلب</h2>
+        <table>
+        <tr>
+            <th>كود البقرة</th>
+            <th>كمية اللبن المحلوبة</th>
+            <th>وقت الحلب</th>
+        </tr>
+        <% milkingRecords.forEach(function(record) { %>
+        <tr>
+            <td><%= record.cow_id %></td>
+            <td><%= record.milk_amount %> KG</td>
+            <td><%= record.milking_datetime %></td>
+        </tr>
+        <% }); %>
+    </table>
+    </div>
+
+    <script src="https://fastly.jsdelivr.net/npm/chart.js"></script>
+
     <script>
+        // Retrieve the data for the line chart from the server
+        // const lineChartData = {labels: ["January", "February", "March", "April", "May", "June"],
+            // data: [100, 150, 200, 180, 220, 250]};
+            function decodeEntities(encodedString) {
+            var textArea = document.createElement('textarea');
+            textArea.innerHTML = encodedString;
+            return textArea.value;
+             }            
+            const encodedLabel = '<%= label %>';
+            const decodedLabel = decodeEntities(encodedLabel);
+            const lineChartData = {
+                labels: JSON.parse(decodedLabel),
+                data: <%= data %>
+            };
+          console.log(lineChartData)
+        // Create the line chart
+        const lineChartElement = document.getElementById("lineChart");
+        const lineChart = new Chart(lineChartElement, {
+            type: 'line',
+            data: {
+                labels: lineChartData.labels,
+                datasets: [
+                    {
+                        label: 'كمية الحلب',
+                        data: lineChartData.data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        // fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'التاريخ'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'كمية الحلب'
+                        }
+                    }
+                }
+            }
+        });
+
         function showMilkingRecords() {
             var milkingRecordsDiv = document.getElementById("milkingRecords");
             milkingRecordsDiv.style.display = "block";

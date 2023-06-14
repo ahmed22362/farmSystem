@@ -27,10 +27,13 @@
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             text-align: right;
+
         }
 
         .details-container .details-pair {
             margin-bottom: 10px;
+            margin-right: 30px;
+
         }
 
         .details-container .details-pair label {
@@ -50,6 +53,7 @@
         .button-container {
             margin-top: 20px;
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
         }
 
@@ -60,7 +64,7 @@
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 10px;
+            margin: 5px;
             font-size: 16px;
             transition: background-color 0.3s ease-in-out;
         }
@@ -136,41 +140,31 @@
         <% if (typeof milkCow !== 'undefined') { %>
             
         <div class="details-pair">
-            <label>وقت اخر تلقيح:</label>
-            <p><%= animal.last_pollination_time %></p>
-        </div>
-        <div class="details-pair">
-            <label>كود الحيوان الملقح:</label>
-            <p><%= animal.code_of_pollinated_animal %></p>
-        </div>
-        <div class="details-pair">
-            <label>عدد التحصينات:</label>
-            <p><%= animal.number_of_pollination %></p>
-        </div>
-        <div class="details-pair">
-            <label>موعد الشياع:</label>
-            <p><%= animal.estrus %></p>
-        </div>
-        <div class="details-pair">
-            <label>الكفائة التناسلية للبقرة:</label>
-            <p><%= animal.reproductive_competence %></p>
+            <label>تاريخ اول ولادة:</label>
+            <p><%= animal.date_of_first_birth %></p>
         </div>
         <% } %>
         
         <div class="button-container">
             <% if (typeof meatCow !== 'undefined') { %>
-                <button class="edit" onclick="location.href='http://localhost:3000/meat_cows/update/?id=<%= animal.id %>';">تعديل</button>
+
+                <button class="edit" onclick="location.href='http://localhost:3000/meat_cows/update/?id=<%= animal.id %>'" style="background-color: #4caf50;">تعديل</button>
+                <button class="edit" onclick="location.href=`http://localhost:3000/meat_cows/weight/details?id=<%= animal.id %>`">سجل الاوزان</button>
+                <button class="edit" onclick="location.href='http://localhost:3000/meat_cows/fodder/details?id=<%= animal.id %>'">استهلاك العلف</button>
                 <form action="http://localhost:3000/meat_cows/delete" method="post">
                     <input type="hidden" name="id" value= "<%= animal.id %>" /> 
                     <button class="delete" type="submit">مسح</button>
                 </form> 
             <% } else if(typeof milkCow !== 'undefined') { %>
-                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/update/?id=<%= animal.id %>';">تعديل</button>
+                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/update/?id=<%= animal.id %>';" style="background-color: #4caf50;">تعديل</button>
+                <!-- <button class="edit" onclick="location.href=`http://localhost:3000/milk_cows/weight/details?id=<%= animal.id %>`">سجل الاوزان</button> -->
+                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/fodder/details?id=<%= animal.id %>'">استهلاك العلف</button>
+                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/milking/details?id=<%= animal.id %>'">سجل الحلب</button>
+                <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/reproduction/details?id=<%= animal.id %>'">سجل التناسل</button>
                 <form action="http://localhost:3000/milk_cows/delete" method="post">
                     <input type="hidden" name="id" value= "<%= animal.id %>" /> 
                     <button class="delete" type="submit">مسح</button>
                 </form> 
-                <button class="edit" onclick="http://localhost:3000/milk">اضف حلبة</button>
             <% } %>
         </div>
     </div>
