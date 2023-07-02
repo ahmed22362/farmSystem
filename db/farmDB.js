@@ -77,6 +77,9 @@ const createTables = () => {
     cow_id INTEGER NOT NULL,
     milk_amount REAL NOT NULL,
     milking_datetime DATETIME NOT NULL,
+    length_of_dry_period INTEGER,
+    milk_season_number INTEGER,
+    fat_percentage REAL,
     FOREIGN KEY (cow_id) REFERENCES cow (id)
   );`,
     (err) => {
@@ -92,6 +95,7 @@ const createTables = () => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cow_id INTEGER NOT NULL,
     weight REAL NOT NULL,
+    rate_of_increase REAL,
     measurement_date DATE NOT NULL,
     FOREIGN KEY (cow_id) REFERENCES cow (id)
     );`,
@@ -107,6 +111,8 @@ const createTables = () => {
     `CREATE TABLE IF NOT EXISTS fodder_tracking (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       cow_id INTEGER NOT NULL,
+      concentrated_feed REAL,
+      coarse_fodder REAL,
       fodder_amount REAL NOT NULL,
       feeding_date DATE NOT NULL,
       FOREIGN KEY (cow_id) REFERENCES cow (id)
@@ -129,7 +135,10 @@ const createTables = () => {
     date_of_births Date,
     date_of_estrus DATE,
     date_of_insemination DATE,
+    date_of_first_ovulation_after_birth DATE,
     reproductive_competence REAL,
+    number_of_movement integer ,
+    number_of_estrus integer ,
     FOREIGN KEY (cow_id) REFERENCES cow (id)
     );`,
     (err) => {

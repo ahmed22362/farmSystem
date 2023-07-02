@@ -30,9 +30,13 @@ exports.getHighestMilkProduction = async () => {
   try {
     const db = await openDBAsync()
     const row = await db.get(
-      `SELECT max(milk_amount) as highestMilkProduction from milking_data;`
+      `SELECT max(milk_amount) as highestMilkProduction,cow_id  from milking_data;`
     )
-    return row.highestMilkProduction
+    const data = {
+      highestMilkProduction: row.highestMilkProduction,
+      cow_id: row.cow_id,
+    }
+    return data
   } catch (error) {
     console.error("Error retrieving highest milking amount:", error)
     throw error

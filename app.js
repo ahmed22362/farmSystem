@@ -46,7 +46,6 @@ app.use("/user", useRouter)
 app.get("/", (req, res) => {
   res.render("login")
 })
-
 const server = app.listen(3000, (req, res) => {
   // open.open("http://localhost:3000/")
   console.log("App is running on port 3000")

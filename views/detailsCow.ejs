@@ -8,6 +8,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f4f4f4;
+            background-image: url('/cowDetails3.jpeg');
+            background-size: cover;
             padding: 20px;
             direction: rtl;
             text-align: right;
@@ -81,7 +83,7 @@
 </head>
 
 <body>
-    <h1>عرض بيانات البقرة</h1>
+    <h1 style="color: white;">عرض بيانات البقرة</h1>
 
     <div class="details-container">
         <div class="details-pair">
@@ -95,7 +97,7 @@
         </div>
 
         <div class="details-pair">
-            <label>الوزن:</label>
+            <label>الوزن الحالي:</label>
             <p><%= animal.weight %> KG</p>
         </div>
         <% if (typeof meatCow!== 'undefined') { %>
@@ -116,13 +118,17 @@
         </div>
 
         <div class="details-pair">
-            <label>كود الاب:</label>
+            <label>كود الطلوقة:</label>
             <p><%= animal.father_code %></p>
         </div>
 
         <div class="details-pair">
             <label>كود الام:</label>
             <p><%= animal.mother_code %></p>
+        </div>
+        <div class="details-pair">
+            <label>الوزن  عند الولادة:</label>
+            <p><%= animal.weight_on_birth %> KG</p>
         </div>
         <div class="details-pair">
             <label>التحصينات:</label>
@@ -157,7 +163,7 @@
                 </form> 
             <% } else if(typeof milkCow !== 'undefined') { %>
                 <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/update/?id=<%= animal.id %>';" style="background-color: #4caf50;">تعديل</button>
-                <!-- <button class="edit" onclick="location.href=`http://localhost:3000/milk_cows/weight/details?id=<%= animal.id %>`">سجل الاوزان</button> -->
+                <button class="edit" onclick="location.href=`http://localhost:3000/milk_cows/weight/details?id=<%= animal.id %>`">سجل الاوزان</button>
                 <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/fodder/details?id=<%= animal.id %>'">استهلاك العلف</button>
                 <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/milking/details?id=<%= animal.id %>'">سجل الحلب</button>
                 <button class="edit" onclick="location.href='http://localhost:3000/milk_cows/reproduction/details?id=<%= animal.id %>'">سجل التناسل</button>

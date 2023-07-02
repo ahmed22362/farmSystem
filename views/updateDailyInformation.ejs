@@ -87,8 +87,13 @@
             <label for="weight"><%= record.cow_id %></label>
             <label for="fodder_amount">كمية العلفة المأكولة:</label>
             <input type="number" class="right-aligned"  name="fodder_amount" value="<%= record.fodder_amount %>"><br>
+            <label for="fodder_amount">:العلف المركز</label>
+            <input type="number" class="right-aligned"  name="concentrated_feed" required value="<%= record.concentrated_feed %>"><br>
+            <label for="fodder_amount">:العلف خشن</label>
+            <input type="number" class="right-aligned"  name="coarse_fodder" required value="<%= record.coarse_fodder %>"><br>
             <label for="feeding_date">تاريخ اليوم:</label>
             <input type="date" class="right-aligned"  name="feeding_date" value="<%= record.feeding_date %>"><br>
+            <br>
             <br>
         <%} else if (typeof milking !== 'undefined'){ %>   
             <label for="weight_on_birth">:كود البقرة</label>
@@ -98,10 +103,17 @@
             <label for="milking_datetime">:وقت الحلب</label>
             <input type="datetime-local" class="right-aligned"  name="milking_datetime" required value="<%= record.milking_datetime %>"><br>
             <br>
+            <label for="length_of_dry_period">:طول فترة الجفاف</label>
+            <input type="number" class="right-aligned"  name="length_of_dry_period" required value="<%= record.length_of_dry_period %>"><br>
+            <label for="milk_season_number">:ترتيبة موسم الحليب</label>
+            <input type="number" class="right-aligned"  name="milk_season_number" required value="<%= record.milk_season_number %>"><br>
+            <label for="fat_percentage">:نسبة الدهن في اللبن</label>
+            <input type="number" class="right-aligned"  name="fat_percentage" required value="<%= record.fat_percentage %>"><br>
+            <br>
         <% } else if (typeof reproduction !== 'undefined'){ %>   
             <label for="weight_on_birth">:كود البقرة</label>
             <label for="weight"><%= record.cow_id %></label>
-            <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
+            <label for="code_of_pollinated_animal">:كود الطلوق</label>
             <input type="text" class="right-aligned"  name="code_of_pollinated_animal" required value="<%= record.code_of_pollinated_animal %>" ><br>
             <br>
             <label for="number_of_pollination">:عدد مرات التلقيح</label>
@@ -110,10 +122,16 @@
             <input type="number" class="right-aligned"  name="number_of_births" required value="<%= record.number_of_births %>"><br>
             <label for="date_of_births">:تاريخ الولادة</label>
             <input type="date" class="right-aligned"  name="date_of_births" required value="<%= record.date_of_births %>"><br>
-            <label for="date_of_estrus">:معاد الشياع</label>
+            <label for="date_of_estrus">:تاريخ الشياع</label>
             <input type="date" class="right-aligned"  name="date_of_estrus" required value="<%= record.date_of_estrus %>"><br>
-            <label for="date_of_insemination">:معاد التخصيب</label>
+            <label for="number_of_movement">:عدد الحركات في اليوم</label>
+            <input type="number" class="right-aligned"  name="number_of_movement" required value="<%= record.number_of_movement %>"><br>
+            <label for="number_of_estrus">:عدد مرات الشياع</label>
+            <input type="number" class="right-aligned"  name="number_of_estrus" required value="<%= record.number_of_estrus %>"><br>
+            <label for="date_of_insemination">:تاريخ التخصيب</label>
             <input type="date" class="right-aligned"  name="date_of_insemination" required value="<%= record.date_of_insemination %>"><br>
+            <label for="date_of_first_ovulation_after_birth">:تاريخ اول شياع بعد الولادة</label>
+            <input type="date" class="right-aligned"  name="date_of_first_ovulation_after_birth" required value="<%= record.date_of_first_ovulation_after_birth %>"><br>
             <br>
         <% } %>
 			<button type="submit">حفظ التعديلات</button>

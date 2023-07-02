@@ -8,6 +8,8 @@
       background-color: #f1f1f1;
       margin: 0;
       padding: 0;
+      background-image: url('/login.jpeg');
+      background-size:cover;
     }
 
     .container {
@@ -45,10 +47,18 @@
       cursor: pointer;
       width: 100%;
     }
+    img {
+      display: block;
+      margin: 0 auto;
+      width: 150px; 
+      height: auto; 
+      border-radius: 50%;
+    }   
   </style>
 </head>
 <body>
   <div class="container">
+    <img src="/logo.jpeg" alt="">
     <h2>تسجيل الدخول</h2>
     <form action="/user/login" method="POST">
       <label for="username">اسم المستخدم</label>
@@ -67,4 +77,10 @@
   </div>
 
 </body>
+<!-- <footer>
+  <p>&copy;CodeGate</p><span><a href="mailto:info@codegate.com">info@codegate.com</a></span>
+</footer> -->
+<footer style="background-color: #71c074; ; text-align: center; padding:4px;">
+  <p style="margin: 0;">&copy; 2023 CodeGate</p>
+</footer>
 </html>

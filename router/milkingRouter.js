@@ -25,7 +25,8 @@ router.route("/").get(async (req, res) => {
   res.render("milkDashboard", {
     milkingCowsCount: count,
     milkingLitersAmount: milkCount,
-    highestMilkProduction: highest,
+    highestMilkProduction: highest.highestMilkProduction,
+    maxMilkProductionCow: highest.cow_id,
     milkingRecords: records,
     label: label,
     data,

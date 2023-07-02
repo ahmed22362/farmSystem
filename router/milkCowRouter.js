@@ -40,7 +40,6 @@ router
   })
   .post(milkCowController.addMilking)
 router.route("/milking/details").get(milkCowController.getMilking)
-
 router
   .route("/milking/update")
   .get(milkCowController.getUpdateMilking)

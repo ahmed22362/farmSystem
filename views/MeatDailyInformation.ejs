@@ -8,20 +8,27 @@
             text-align: right;
             background-color: #f4f4f4;
             padding: 20px;
+            <% if (typeof weight !== 'undefined' ){ %>
+                background-image: url('/weight.jpg');
+              <% } else if (typeof fodder !== 'undefined' ){ %>
+                background-image: url('/addFodder.jpeg');
+              <% } %>
+              background-size:cover;
+
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
         }
 
         form {
-            max-width: 400px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            width: 500px;
         }
 
         label {
@@ -66,7 +73,7 @@
 </head>
 <body>
   <% if (typeof weight !== 'undefined' ){ %>
-    <h1>إضافة وزن بقرة </h1>
+    <h1 style="color: black;">إضافة وزن بقرة </h1>
   <% } else if (typeof fodder !== 'undefined' ){ %>
     <h1>إضافة كمية العلف المأكولة لبقرة </h1>
   <%}%>
@@ -88,8 +95,10 @@
         <%} else if( fodder !== "undefined"){%>   
             <label for="weight_on_birth">:كود البقرة</label>
             <textarea type="text" class="right-aligned" rows="1"  name="cow_id" required></textarea><br>
-            <label for="fodder_amount">:كمية العلفة المأكولة</label>
-            <input type="number" class="right-aligned"  name="fodder_amount" required><br>
+            <label for="fodder_amount">:العلف المركز</label>
+            <input type="number" class="right-aligned"  name="concentrated_feed" required><br>
+            <label for="fodder_amount">:العلف خشن</label>
+            <input type="number" class="right-aligned"  name="coarse_fodder" required><br>
             <label for="feeding_date">:تاريخ اليوم</label>
             <input type="date" class="right-aligned"  name="feeding_date" required><br>
             <br>

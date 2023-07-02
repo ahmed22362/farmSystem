@@ -1,4 +1,4 @@
-const { closeDB, openDB } = require("../db/farmDB")
+const { closeDB, openDB, openDBAsync } = require("../db/farmDB")
 
 exports.getUpdateMilkCow = (req, res) => {
   // Fetch the milk cow data from the database
@@ -18,12 +18,17 @@ exports.getUpdateMilkCow = (req, res) => {
 }
 exports.UpdateMilkCow = (req, res) => {
   const milkCowId = req.body.id
+  strain = req.body.strain
+  ownership = req.body.ownership
+  strain = returnSecValue(req.body.strain)
+  ownership = returnSecValue(req.body.ownership)
+  req.body.strain = strain
+  req.body.ownership = ownership
   const columns =
     Object.keys(req.body)
       .filter((key) => key !== "id")
       .join(" = ?, ") + " = ?"
   const values = Object.values(req.body).filter((value, index) => index !== 0)
-
   const sql = `UPDATE cow SET ${columns} WHERE id = ?`
   openDB().then((openDB) =>
     openDB.run(sql, [...values, milkCowId], function (err) {
@@ -52,22 +57,21 @@ exports.deleteMilkCow = (req, res) => {
   })
 }
 
-exports.getCowDetails = (req, res) => {
-  {
-    // Fetch the milk cow data from the database
-    const milkCowId = req.params.id // Assuming you pass the ID as a query parameter
-    openDB().then((openDB) => {
-      openDB.get("SELECT * FROM cow WHERE id = ?", [milkCowId], (err, row) => {
-        if (err) {
-          console.error("Error retrieving milk cow:", err.message)
-          closeDB()
-          return res.status(400).send(err.message)
-        } else {
-          closeDB()
-          res.render("detailsCow", { animal: row, milkCow: true })
-        }
-      })
-    })
+exports.getCowDetails = async (req, res) => {
+  // Fetch the milk cow data from the database
+  const db = await openDBAsync()
+  const milkCowId = req.params.id // Assuming you pass the ID as a query parameter
+  try {
+    const cowWeight = await db.get(`SELECT *
+      FROM weight_tracking
+      WHERE cow_id = ${milkCowId}
+      ORDER BY measurement_date DESC
+      LIMIT 1`)
+    const cowDetails = await db.get(`SELECT * FROM cow WHERE id = ${milkCowId}`)
+    cowDetails.weight = cowWeight.weight
+    res.render("detailsCow", { animal: cowDetails, milkCow: true })
+  } catch (error) {
+    return res.status(400).send(`<h1>${error.message}</h1>`)
   }
 }
 
@@ -86,28 +90,46 @@ exports.getAllMilkCow = (req, res) => {
   )
 }
 
-exports.addMilkCow = (req, res) => {
+exports.addMilkCow = async (req, res) => {
   req.body.type = "milk"
   req.body.gender = "female"
+  strain = req.body.strain
+  ownership = req.body.ownership
+  strain = returnSecValue(req.body.strain)
+  ownership = returnSecValue(req.body.ownership)
+  req.body.strain = strain
+  req.body.ownership = ownership
+  console.log(req.body, strain, ownership)
   const columns = Object.keys(req.body).join(", ")
   const values = Object.values(req.body)
     .map((value) => `"${value}"`)
     .join(", ")
 
-  // Insert the form data into the milk_cow table
-  const sql = `INSERT INTO cow (${columns}) 
-                VALUES (${values})`
+  const db = await openDBAsync()
+  const sql = `INSERT INTO cow (${columns}) VALUES (${values})`
+  try {
+    const cow = await db.run(sql)
+    // Get the ID of the newly inserted cow
+    const cowId = cow.lastID
+    const date = new Date()
+      .toLocaleDateString("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .split("/")
+      .reverse()
+      .join("-")
+    console.log(date)
+    // Add weight tracking record
+    const weightSql = `INSERT INTO weight_tracking (weight, cow_id,measurement_date) VALUES (${req.body.weight}, ${cowId},'${date}')`
+    await db.run(weightSql)
 
-  openDB().then((openDB) =>
-    openDB.run(sql, (err) => {
-      if (err) {
-        console.log(err.message)
-        return res.status(400).end(`some thing wrrong happened: ${err.message}`)
-      } else {
-        res.redirect("/milk_cows")
-      }
-    })
-  )
+    res.redirect("/milk_cows")
+  } catch (error) {
+    console.log(error.message)
+    return res.status(400).end(`Something wrong happened: ${error.message}`)
+  }
 }
 
 // CRUD operations for milking_record table
@@ -264,7 +286,9 @@ exports.updateWeight = (req, res) => {
 
 // CRUD operations for fodder_tracking table
 exports.addFodder = (req, res) => {
-  const { cow_id, fodder_amount, feeding_date } = req.body
+  const { cow_id, coarse_fodder, concentrated_feed, feeding_date } = req.body
+  const fodder_amount = Number(coarse_fodder) + Number(concentrated_feed)
+
   // Check if the cow exists
   const checkCowSql = `SELECT id FROM cow WHERE id = ${cow_id} and type ="milk"`
   openDB().then((db) => {
@@ -278,15 +302,19 @@ exports.addFodder = (req, res) => {
         return res.status(404).send("<h1>Cow not found</h1>")
       }
       // Cow exists, insert the fodder record
-      const insertSql = `INSERT INTO fodder_tracking (cow_id, fodder_amount, feeding_date) VALUES (?, ?, ?)`
-      db.run(insertSql, [cow_id, fodder_amount, feeding_date], function (err) {
-        if (err) {
-          console.error(err.message)
-          return res.status(400).send(err.message)
+      const insertSql = `INSERT INTO fodder_tracking (cow_id, fodder_amount, feeding_date,concentrated_feed,coarse_fodder ) VALUES (?, ?, ?, ?, ?)`
+      db.run(
+        insertSql,
+        [cow_id, fodder_amount, feeding_date, concentrated_feed, coarse_fodder],
+        function (err) {
+          if (err) {
+            console.error(err.message)
+            return res.status(400).send(err.message)
+          }
+          console.log(`Added fodder record with id ${this.lastID}`)
+          res.redirect("/milk_cows")
         }
-        console.log(`Added fodder record with id ${this.lastID}`)
-        res.redirect("/milk_cows")
-      })
+      )
     })
   })
 }
@@ -337,18 +365,23 @@ exports.getUpdateFodders = (req, res) => {
   )
 }
 exports.updateFodder = (req, res) => {
-  const { fodder_amount, feeding_date, id, cow_id } = req.body
+  const { coarse_fodder, concentrated_feed, feeding_date, id, cow_id } =
+    req.body
   // Weight record exists, update the data
-  const updateSql = `UPDATE fodder_tracking SET fodder_amount = ?, feeding_date = ? WHERE id = ?`
+  const updateSql = `UPDATE fodder_tracking SET concentrated_feed = ?, feeding_date = ?,coarse_fodder = ? WHERE id = ?`
   openDB().then((openDB) =>
-    openDB.run(updateSql, [fodder_amount, feeding_date, id], function (err) {
-      if (err) {
-        console.error(err.message)
-        return res.status(400).send(err.message)
+    openDB.run(
+      updateSql,
+      [concentrated_feed, feeding_date, coarse_fodder, id],
+      function (err) {
+        if (err) {
+          console.error(err.message)
+          return res.status(400).send(err.message)
+        }
+        console.log(`Updated fodder record with id ${id}`)
+        res.redirect(`/milk_cows/fodder/details?id=${cow_id}`)
       }
-      console.log(`Updated fodder record with id ${id}`)
-      res.redirect(`/milk_cows/fodder/details?id=${cow_id}`)
-    })
+    )
   )
 }
 exports.deleteFodder = (req, res) => {
@@ -368,7 +401,14 @@ exports.deleteFodder = (req, res) => {
 }
 // CRUD operations for miking_data table
 exports.addMilking = (req, res) => {
-  const { cow_id, milk_amount, milking_datetime } = req.body
+  const {
+    cow_id,
+    milk_amount,
+    milking_datetime,
+    fat_percentage,
+    milk_season_number,
+    length_of_dry_period,
+  } = req.body
   // Check if the cow exists
   const checkCowSql = `SELECT id FROM cow WHERE id = ${cow_id} and type ="milk"`
   openDB().then((db) => {
@@ -382,10 +422,17 @@ exports.addMilking = (req, res) => {
         return res.status(404).send("<h1>Cow not found</h1>")
       }
       // Cow exists, insert the fodder record
-      const insertSql = `INSERT INTO milking_data (cow_id, milk_amount, milking_datetime) VALUES (?, ?, ?)`
+      const insertSql = `INSERT INTO milking_data (cow_id, milk_amount, milking_datetime,fat_percentage,milk_season_number,length_of_dry_period) VALUES (?, ?, ?, ?, ?, ?)`
       db.run(
         insertSql,
-        [cow_id, milk_amount, milking_datetime],
+        [
+          cow_id,
+          milk_amount,
+          milking_datetime,
+          fat_percentage,
+          milk_season_number,
+          length_of_dry_period,
+        ],
         function (err) {
           if (err) {
             console.error(err.message)
@@ -421,6 +468,7 @@ exports.getMilking = (req, res) => {
 }
 exports.getUpdateMilking = (req, res) => {
   // Fetch the milk cow data from the database
+  console.log("here is update")
   const weightRecordID = req.query.id // Assuming you pass the ID as a query parameter
   openDB().then((openDB) =>
     openDB.get(
@@ -446,18 +494,37 @@ exports.getUpdateMilking = (req, res) => {
   )
 }
 exports.updateMilking = (req, res) => {
-  const { milk_amount, milking_datetime, id, cow_id } = req.body
-  // Weight record exists, update the data
-  const updateSql = `UPDATE milking_data SET milk_amount = ?, milking_datetime = ? WHERE id = ?`
+  console.log("here is post update")
+  const {
+    id,
+    milk_amount,
+    milking_datetime,
+    fat_percentage,
+    milk_season_number,
+    length_of_dry_period,
+    cow_id,
+  } = req.body // Weight record exists, update the data
+  console.log("this is here")
+  const updateSql = `UPDATE milking_data SET milk_amount = ?, milking_datetime = ?, fat_percentage = ?, milk_season_number = ?,length_of_dry_period = ? WHERE id = ?`
   openDB().then((openDB) =>
-    openDB.run(updateSql, [milk_amount, milking_datetime, id], function (err) {
-      if (err) {
-        console.error(err.message)
-        return res.status(400).send(err.message)
+    openDB.run(
+      updateSql,
+      [
+        milk_amount,
+        milking_datetime,
+        fat_percentage,
+        milk_season_number,
+        length_of_dry_period,
+        id,
+      ],
+      function (err) {
+        if (err) {
+          console.error(err.message)
+          return res.status(400).send(err.message)
+        }
+        res.redirect(`/milk_cows/milking/details?id=${cow_id}`)
       }
-      console.log(`Updated milking record with id ${id}`)
-      res.redirect(`/milk_cows/milking/details?id=${cow_id}`)
-    })
+    )
   )
 }
 exports.deleteMilking = (req, res) => {
@@ -477,7 +544,7 @@ exports.deleteMilking = (req, res) => {
 }
 
 // CRUD operations for reproduction table
-exports.addReproduction = (req, res) => {
+exports.addReproduction = async (req, res) => {
   const {
     cow_id,
     code_of_pollinated_animal,
@@ -486,61 +553,62 @@ exports.addReproduction = (req, res) => {
     date_of_births,
     date_of_estrus,
     date_of_insemination,
+    date_of_first_ovulation_after_birth,
+    number_of_movement,
+    number_of_estrus,
   } = req.body
-  const reproductive_competence = 0
   // Check if the cow exists
-  const checkCowSql = `SELECT id FROM cow WHERE id = ${cow_id} and type ="milk"`
-  openDB().then((db) => {
-    db.get(checkCowSql, (err, row) => {
-      if (err) {
-        console.error(err.message)
-        return res.status(400).send(err.message)
-      }
-      if (!row) {
-        // Cow does not exist
-        return res.status(404).send("<h1>Cow not found</h1>")
-      }
-      // Cow exists, insert the fodder record
-      const insertSql = `INSERT INTO reproduction_tracking (
+  const checkCowSql = `SELECT id ,date_of_first_birth FROM cow WHERE id = ${cow_id} and type ="milk"`
+  try {
+    const db = await openDBAsync()
+    const cow = await db.get(checkCowSql)
+    if (!cow) {
+      return res.status(404).send("<h1>Cow not found</h1>")
+    }
+    const lastBirth = await db.get(
+      `SELECT max(date_of_births) as last_date_of_birth ,count(*) as birth_count from reproduction_tracking
+       where cow_id = ${cow_id}`
+    )
+    const numberOfDays =
+      (new Date(lastBirth.last_date_of_birth) -
+        new Date(cow.date_of_first_birth)) /
+      (24 * 60 * 60 * 1000)
+    var reproductive_competence =
+      (365 * (lastBirth.birth_count - 1) * 100) / numberOfDays
+    reproductive_competence = parseFloat(reproductive_competence).toFixed(2)
+    const insertSql = `INSERT INTO reproduction_tracking (
         cow_id,
         code_of_pollinated_animal,
         number_of_pollination,
         number_of_births,
         date_of_births,
         date_of_estrus,
-        date_of_insemination)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`
-      db.run(
-        insertSql,
-        [
-          cow_id,
-          code_of_pollinated_animal,
-          number_of_pollination,
-          number_of_births,
-          date_of_births,
-          date_of_estrus,
-          date_of_insemination,
-        ],
-        function (err) {
-          if (err) {
-            console.error(err.message)
-            return res.status(400).send(err.message)
-          }
-          console.log([
-            cow_id,
-            code_of_pollinated_animal,
-            number_of_pollination,
-            number_of_births,
-            date_of_births,
-            date_of_estrus,
-            date_of_insemination,
-          ])
-          console.log(`Added reproduction record with id ${this.lastID}`)
-          res.redirect("/milk_cows")
-        }
-      )
-    })
-  })
+        date_of_insemination,
+        reproductive_competence,
+        date_of_first_ovulation_after_birth,
+        number_of_estrus,
+        number_of_movement
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    await db.run(insertSql, [
+      cow_id,
+      code_of_pollinated_animal,
+      number_of_pollination,
+      number_of_births,
+      date_of_births,
+      date_of_estrus,
+      date_of_insemination,
+      reproductive_competence,
+      date_of_first_ovulation_after_birth,
+      number_of_estrus,
+      number_of_movement,
+    ])
+    console.log(`Added reproduction record with id ${this.lastID}`)
+    res.redirect("/milk_cows")
+  } catch (error) {
+    console.log(error.message)
+    return res.status(400).send(error.message)
+  }
 }
 exports.getReproductions = (req, res) => {
   const cowId = req.query.id
@@ -552,6 +620,7 @@ exports.getReproductions = (req, res) => {
         return res.status(400).send(err.message)
       }
       closeDB()
+      console.log(rows)
       res.render("dailyDashboard", {
         records: rows,
         milkCow: true,
@@ -599,6 +668,8 @@ exports.updateReproduction = (req, res) => {
     date_of_births,
     date_of_estrus,
     date_of_insemination,
+    number_of_movement,
+    number_of_estrus,
   } = req.body
   // Weight record exists, update the data
   const updateSql = `UPDATE reproduction_tracking
@@ -608,7 +679,9 @@ exports.updateReproduction = (req, res) => {
       number_of_births = ?,
       date_of_births = ?,
       date_of_estrus = ?,
-      date_of_insemination = ?
+      date_of_insemination = ?,
+      number_of_movement = ?,
+      number_of_estrus = ?
       WHERE id = ?`
   openDB().then((openDB) =>
     openDB.run(
@@ -621,6 +694,8 @@ exports.updateReproduction = (req, res) => {
         date_of_births,
         date_of_estrus,
         date_of_insemination,
+        number_of_movement,
+        number_of_estrus,
         id,
       ],
       function (err) {
@@ -648,4 +723,15 @@ exports.deleteReproduction = (req, res) => {
       res.redirect(`/milk_cows/reproduction/details?id=${cow_id}`)
     })
   })
+}
+function returnSecValue(params) {
+  if (Array.isArray(params) && params.length > 1) {
+    params = params.filter(Boolean)
+    console.log(params)
+    if (params.length > 1) {
+      return params[1]
+    } else {
+      return params[0]
+    }
+  }
 }

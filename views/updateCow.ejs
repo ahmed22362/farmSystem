@@ -81,6 +81,16 @@
         inputPairBuy.style.display = "none";
       }
     }
+    function handleStrainOptionChange() {
+      var select = document.getElementById("strainSelector");
+      var otherField = document.getElementById("strainOtherField");
+
+      if (select.value === "اخرى") {
+        otherField.style.display = "block";
+      } else {
+        otherField.style.display = "none";
+      }
+    }
   </script>
 </head>
 
@@ -96,7 +106,7 @@
 			<input type="hidden" name="id" value="<%= animal.id %>">
 
 			<label for="strain">:السلالة</label>
-            <select name="strain">
+            <select name="strain" id="strainSelector" onchange="handleStrainOptionChange()">
             <% if (typeof meatCow !== 'undefined'){ %>
               <option value="السيمنتال" <% if (animal.strain=== 'السيمنتال') { %>selected<% } %>>السيمنتال</option>
               <option value="الشاروليه" <% if (animal.strain === 'الشاروليه') { %>selected<% } %>>الشاروليه</option>
@@ -110,8 +120,13 @@
                 <option value="فريزيان"<% if (animal.strain=== 'فريزيان') { %>selected<% } %>>فريزيان</option>
                 <option value="جنرسي"<% if (animal.strain=== 'جنرسي') { %>selected<% } %>>جنرسي</option>
             <% } %>
+            <option value="اخرى">اخرى</option>
             </select>
-
+            <div id="strainOtherField" class="input-pair" style="display: none;">
+                <label for="other">:اخرى</label>
+                <input type="text" name="strain"><br>
+              </div>
+              <br>
             <% if (typeof meatCow !== 'undefined') { %>
                 <label for="weight">:النوع</label>
                 <select name="gender" class="right-aligned" required>
@@ -160,19 +175,12 @@
 			<textarea id="notes" name="notes"><%= animal.notes %></textarea>
 
             <% if (typeof milkCow !== 'undefined') { %>
-            <label for="weight">الوزن:</label>
-			<input type="number" id="weight" name="weight" value="<%= animal.weight %>" required>
+            <!-- <label for="weight">الوزن:</label>
+			<input type="number" id="weight" name="weight" value="<%= animal.weight %>" required> -->
             <br>
             <label for="date_of_first_birth">:تاريخ اول ولادة</label>
             <input type="date" class="right-aligned"  name="date_of_first_birth" value="<%= animal.date_of_first_birth %>"><br>
-            <!-- <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
-            <textarea type="text" class="right-aligned" rows="1"  name="code_of_pollinated_animal"><%= animal.code_of_pollinated_animal %></textarea><br>
-            <label for="number_of_pollination">:عدد التحصينات</label>
-            <input type="number" class="right-aligned"  name="number_of_pollination" value="<%= animal.number_of_pollination %>"><br>
-            <label for="estrus">:موعد الشياع</label>
-            <input type="date" class="right-aligned"  name="estrus" value="<%= animal.estrus %>"><br>
-            <label for="reproductive_competence">:الكفائة التناسلية للبقرة</label>
-            <input type="number" class="right-aligned"  name="reproductive_competence" value="<%= animal.reproductive_competence %>"><br> -->
+
             <% } %>
 			<button type="submit">حفظ التعديلات</button>
 		</form>

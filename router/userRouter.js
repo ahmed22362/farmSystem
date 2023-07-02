@@ -5,7 +5,7 @@ const pool = require("../db/pool")
 router.post("/login", (req, res) => {
   const { username, password } = req.body
   if (username === "this") {
-    // Redirect to the dashboard page
+    // Redirect to the dashboar d page
     res.redirect("/home")
   } else {
     // Handle unsuccessful login

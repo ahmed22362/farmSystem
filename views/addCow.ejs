@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Meat Cow</title>
+    <title>Add Cow</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: right;
             background-color: #f4f4f4;
             padding: 20px;
+    			background-image: url('/addCow.jpeg');
+          background-size:cover;
+
         }
 
         h1 {
@@ -94,13 +97,24 @@
         inputPairBuy.style.display = "none";
       }
     }
+    function handleStrainOptionChange() {
+      var select = document.getElementById("strainSelector");
+      var otherField = document.getElementById("strainOtherField");
+
+      if (select.value === "اخرى") {
+        otherField.style.display = "block";
+      } else {
+        otherField.style.display = "none";
+      }
+    }
+  
   </script>
 </head>
 <body>
 
-  <button class="back-button" onclick="location.href='<%= typeof meatCow !== 'undefined' ? 'http://localhost:3000/meat_cows' : 'http://localhost:3000/milk_cows' %>'">رجوع</button>
+  <!-- <button class="back-button" onclick="location.href='<%= typeof meatCow !== 'undefined' ? 'http://localhost:3000/meat_cows' : 'http://localhost:3000/milk_cows' %>'">رجوع</button> -->
 
-    <h1>إضافة بقر </h1>
+    <h1>إضافة بقرة </h1>
 
     <form  <% if (typeof meatCow !== 'undefined'){ %>
         action="http://localhost:3000/meat_cows/add"
@@ -109,7 +123,7 @@
       <% } %> method="post">
 
 		<label for="strain">:السلالة</label>
-        <select name="strain" class="right-aligned" required>
+        <select name="strain" class="right-aligned" id = "strainSelector" onchange="handleStrainOptionChange()" required >
             <% if (typeof meatCow !== 'undefined'){ %>
                 <option value="السيمنتال">السيمنتال </option>
                 <option value="الشاروليه">الشاروليه</option>
@@ -123,9 +137,13 @@
                 <option value="فريزيان">فريزيان</option>
                 <option value="جنرسي">جنرسي</option>
               <% } %>
-
+              <option value="اخرى">اخرى</option>
         </select><br>
-
+        <div id="strainOtherField" class="input-pair" style="display: none;">
+          <label for="other">:اخرى</label>
+          <input type="text" name="strain"><br>
+        </div>
+        <br>
         <label for="ownership">:اقتناء الحيوان</label>
         <select name="ownership" id="mySelect" onchange="handleOptionChange()">
             <option value="ولادة" >ولادة</option>
@@ -136,8 +154,7 @@
           <div id="inputPairBirth" >
             <label for="weight_on_birth">:الوزن عند الولادة</label>
             <input id ="weightBirth" type="number" class="right-aligned"  name="weight_on_birth" step="1"  ><br>
-            <label for="birth_date">:تاريخ الميلاد</label>
-            <input type="date" class="right-aligned"  name="birth_date"><br>
+
             <label for="father_code">:كود الاب</label>
             <input type="text" class="right-aligned"  name="father_code"><br>
             <br>
@@ -156,8 +173,11 @@
             <label for="other">:اخرى</label>
             <input type="text" name="ownership"><br>
           </div>
+          
         <br>
-        <label for="weight">:الوزن الأن</label>
+        <label for="birth_date">:تاريخ الميلاد</label>
+        <input type="date" class="right-aligned"  name="birth_date"><br>
+        <label for="weight">:الوزن الحالي</label>
         <input type="number" class="right-aligned"  name="weight" step="1" required><br>
             
         <% if (typeof meatCow !== 'undefined') { %>

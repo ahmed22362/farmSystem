@@ -3,6 +3,10 @@
 <head>
     <title>احصائية اللبن</title>
     <style>
+        body{
+            background-image: url('/mikingDash.jpeg');
+            background-size: cover;
+        }
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -14,13 +18,14 @@
             width: 200px;
             height: 150px;
             margin: 10px;
-            padding: 10px;
+            padding: 20px;
             border: 1px solid #dddddd;
-            border-radius: 4px;
+            border-radius: 50000px;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s ease-in-out;
             cursor: pointer;
+            background-color: #ffffff;
         }
         
         .card:hover {
@@ -31,6 +36,8 @@
             width: 60%;
             height: 60%;
             margin: 20px auto;
+            background-color: white;
+            border-radius: 10px;
         }
         table {
 		font-family: arial, sans-serif;
@@ -52,6 +59,26 @@
         tr:nth-child(even) {
             background-color: #dddddd;
         }
+        .input-box {
+        display: none;
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        }
+        .calculate-button {
+            display: none;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+
     </style>
 </head>
 <body>
@@ -60,16 +87,25 @@
             <h2>عدد الابقار المحلوبة</h2>
             <p><%= milkingCowsCount %></p>
         </div>
-        <div class="card">
-            <h2>عدد اليترات المحلوبة</h2>
-            <p><%= milkingLitersAmount %></p>
+        <div class="card" >
+            <h2>كمية اللبن المحلوبة الكلية</h2>
+            <p id ="totalAmount"><%= milkingLitersAmount %></p>
         </div>
         <div class="card">
             <h2>اعلى كمية محلوبة</h2>
             <p><%= highestMilkProduction %></p>
+            <p>كود البقرة: <%= maxMilkProductionCow  %></p>
         </div>
-        <div class="card" onclick="showMilkingRecords()">
+        <!-- <div class="card" onclick="showMilkingRecords()">
             <h2>جميع البيانات</h2>
+        </div> -->
+        <div class="card" id="calculateCard" onclick="showInputBox()">
+            <h2 >اضغط لحساب الايراد الاجمالي</h2>
+        </div>
+        
+        <div id="inputBox" class="hidden">
+            <input type="text" class="input-box" placeholder="Enter the cost" id="costInput">
+            <button onclick="calculateCost()" class="calculate-button" id="calculateButton">Calculate</button>
         </div>
     </div>
 
@@ -98,20 +134,17 @@
     <script src="https://fastly.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Retrieve the data for the line chart from the server
-        // const lineChartData = {labels: ["January", "February", "March", "April", "May", "June"],
-            // data: [100, 150, 200, 180, 220, 250]};
-            function decodeEntities(encodedString) {
-            var textArea = document.createElement('textarea');
-            textArea.innerHTML = encodedString;
-            return textArea.value;
-             }            
-            const encodedLabel = '<%= label %>';
-            const decodedLabel = decodeEntities(encodedLabel);
-            const lineChartData = {
-                labels: JSON.parse(decodedLabel),
-                data: <%= data %>
-            };
+        function decodeEntities(encodedString) {
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = encodedString;
+        return textArea.value;
+            }            
+        const encodedLabel = '<%= label %>';
+        const decodedLabel = decodeEntities(encodedLabel);
+        const lineChartData = {
+            labels: JSON.parse(decodedLabel),
+            data: <%= data %>
+        };
           console.log(lineChartData)
         // Create the line chart
         const lineChartElement = document.getElementById("lineChart");
@@ -137,7 +170,7 @@
                         title: {
                             display: true,
                             text: 'التاريخ'
-                        }
+                        },
                     },
                     y: {
                         display: true,
@@ -154,6 +187,40 @@
             var milkingRecordsDiv = document.getElementById("milkingRecords");
             milkingRecordsDiv.style.display = "block";
         }
+        function showInputBox() {
+        var calculateCard = document.getElementById("calculateCard");
+        var inputBox = document.getElementById("costInput");
+        var calculateButton = document.getElementById("calculateButton");
+
+        calculateCard.classList.add("hidden");
+        inputBox.style.display = "block";
+        calculateButton.style.display = "block";
+    }
+
+    function calculateCost() {
+        var inputBox = document.getElementById("costInput");
+        var calculateCard = document.getElementById("calculateCard");
+        var total = document.getElementById("totalAmount");
+        var cost = parseFloat(inputBox.value);
+        var totalNum = parseFloat(total.innerHTML)
+        var calculatedCost = cost * totalNum; // Modify this calculation as per your requirement
+        // const elem = document.createElement("p");
+        // const node = document.createTextNode("This is total cost." + calculatedCost);
+        // elem.appendChild(node);
+        // // Display the calculated cost
+        // // alert("The calculated cost is: " + calculatedCost);
+        // // Display the calculated cost in the card
+        // calculateCard.appendChild(elem);
+        // Reset the input box
+        calculateCard.innerHTML = "<br><br><br>التكلفة الكلية: " + calculatedCost;
+        inputBox.value = "";
+
+        // Hide the input box and calculate button
+        var inputBoxContainer = document.getElementById("inputBox");
+        inputBoxContainer.classList.add("hidden");
+    }
+    
+   
     </script>
 </body>
 </html>

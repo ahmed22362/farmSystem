@@ -7,6 +7,13 @@
 		body{
 			direction: rtl;
             text-align: right;
+			<% if (typeof meatCow !== 'undefined') { %>
+				background-image: url('/meatCow.jpeg');
+			<% } else if (typeof milkCow !== 'undefined'){ %>
+				background-image: url('/milkCow.jpeg');
+
+			<% } %>
+			background-size:cover;
 		}
 		.container {
 			text-align: center;
@@ -35,14 +42,21 @@
 
 		.card-container {
 			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			justify-content: flex-start; /* Changed from "right" to "flex-start" */
+			align-items: flex-start; /* Changed from "right" to "flex-start" */
+			height: 600px;
+		}
+		/* .card-container {
+			display: flex;
 			flex-wrap: wrap;
 			justify-content: center;
 			align-items: center;
-		}
-
+		} */
 		.card {
-			width: 200px;
-			height: 250px;
+			width: 100px;
+			height: 125px;
 			margin: 10px;
 			padding: 10px;
 			border: 1px solid #dddddd;
@@ -51,7 +65,7 @@
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 			transition: box-shadow 0.3s ease-in-out;
 			cursor: pointer;
-			background-color: #4CAF50; 
+			background-color: #1568ac; 
             color: white; 
 		}
 
@@ -94,7 +108,7 @@
 			<button class="add" onclick="location.href='http://localhost:3000/meat_cows/fodder/add'">إضافة كمية علف مأكولة</button>
 		<% } else if (typeof milkCow !== 'undefined'){ %>
 			<button class="add" onclick="location.href='http://localhost:3000/milk_cows/add';">إضافة بقرة</button>
-			<!-- <button class="add" onclick="location.href='http://localhost:3000/milk_cows/weight/add';">إضافة وزن لبقرة</button> -->
+			<button class="add" onclick="location.href='http://localhost:3000/milk_cows/weight/add';">إضافة وزن لبقرة</button>
 			<button class="add" onclick="location.href='http://localhost:3000/milk_cows/fodder/add';">إضافة كمية علف مأكولة</button>
 			<button class="add" onclick="location.href='http://localhost:3000/milk_cows/milking/add';">إضافة حلبة</button>
 			<button class="add" onclick="location.href='http://localhost:3000/milk_cows/reproduction/add';">إضافة بيانات تناسل</button>

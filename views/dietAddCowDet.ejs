@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>اضافة بيانات العليقة</title>
+  <style>
+            body {
+            font-family: Arial, sans-serif;
+            text-align: right;
+            background-color: #f4f4f4;
+            background-image: url('/ingradent.jpeg');
+            padding: 20px;
+            background-size: cover;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        select, input[type="number"], input[type="date"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            direction: rtl;
+            text-align: right;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .right-aligned {
+            direction: rtl;
+            text-align: right;
+        }
+        .input-pair {
+            display: none;
+        }
+        .selected-values {
+            margin-top: 10px;
+        }
+
+        .selected-value {
+            display: inline-block;
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .selected-value-remove {
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #004080;
+        }
+		.back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2196F3;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .result-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            text-align: right;
+        }
+        .result-title {
+            font-size: 24px;
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            font-size: 18px;
+            color: #333;
+        }
+        .fodder-amounts {
+            margin-top: 20px;
+        }
+
+        .fodder-amount {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .fodder-type {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .fodder-amount-value {
+            background-color: #e5e5e5;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: right;
+        }
+        table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 90%;
+		direction: rtl;
+		margin-left: auto;
+  		margin-right: auto;
+		background-color:white;
+	}
+
+	td,
+	th {
+		border: 1px solid #dddddd;
+		text-align: right;
+		padding: 8px;
+	}
+
+	tr:nth-child(even) {
+		background-color: #cecece;
+	}
+
+</style>
+  
+
+</head>
+
+<body>
+    <button class="back-button" onclick="location.href='http://localhost:3000/diets'">رجوع</button>
+
+  <h1>بيانات الحساب</h1>
+  <form  action="/diets/<%=endpoint%>" method="post">
+    <label for="weight_source">:الوزن من</label>
+    <select name="weight_source" id="mySelect" onchange="handleOptionChange()">
+        <option value="كود" >كود بقرة</option>
+        <option value="يدوي">يدوي</option>
+      </select>
+      <div id = "pair_manually" style="display:none;" >
+          <label for="weight_on_birth">:الوزن</label>
+          <input type="number" class="right-aligned"  name="weight" step=".1" value="<% if (typeof cowCode !=='undefined') { %><%=cowCode%><% } %>"><br>
+          <% if (typeof fattening !== 'undefined') { %>
+            <label for="rate_of_increase">:معدل الزيادة</label>
+            <input type="number" class="right-aligned" name="rate_of_increase" step="any"  value="<% if (typeof rate !=='undefined') { %><%=rate%><% } %>"><br>
+          <% } %>
+          <% if (typeof milking !== 'undefined') { %>
+            <label for="avg_yield">:متوسط الادرار</label>
+            <input type="number" class="right-aligned" name="avg_yield" step="any" value="<% if (typeof avg_yield !=='undefined') { %><%=avg_yield %><% } %>" ><br>
+            <label for="fat_percentage">:نسبة الدهن في اللبن</label>
+            <input type="number" class="right-aligned" name="fat_percentage" step="any" value="<% if (typeof fatPer !=='undefined') { %><%=fatPer %><% } %>" ><br>
+            <% } %>
+        </div>
+    <div id = "pair_cow_id">
+        <label for="cow_id">:كود البقرة</label>
+        <textarea type="text" class="right-aligned" rows="1"  name="cow_id"><% if (typeof cowCode !=='undefined') { %><%=cowCode%><% } %></textarea><br>
+        <% if (typeof milking !== 'undefined') { %>
+            <!-- <label for="fat_percentage">:نسبة الدهن في اللبن</label> -->
+            <!-- <input type="number" class="right-aligned" name="fat_percentage" step="any" value="<% if (typeof fatPer !=='undefined') { %><%=fatPer %><% } %>" ><br> -->
+        <% } %>
+    </div>
+
+<% if (typeof ingredient !== "undefined") { %>
+    <label for="fodderTypes">:ادخل نوع العلف</label>
+    <select id="dropdown">
+        <option value="سيلاج ذرة">سيلاج ذرة</option>
+        <option value="سرسة الارز">سرسة الارز</option>
+        <option value="برسيم">برسيم</option>
+        <option value="دراوة">دراوة</option>
+        <option value="حطب أذرة">حطب أذرة</option>
+        <option value="قش ارز">قش ارز</option>
+        <option value="تبن برسيم">تبن برسيم</option>
+        <option value="تبن فول">تبن فول</option>
+        <option value="تبن شعير">تبن شعير</option>
+        <option value="تبن قمح">تبن قمح</option>
+        <option value="مولاس قصب السكر">مولاس قصب السكر</option>
+        <option value="مولاس بجر السكر">مولاس بجر السكر</option>
+        <option value="تفل بنجر السكر جاف">تفل بنجر السكر جاف</option>
+        <option value="برسيم حجاز مجفف صناعا %17">برسيم حجاز مجفف صناعا %17</option>
+        <option value="دريس برسيم حجازي">دريس برسيم حجازي</option>
+        <option value="درس برسيم مسقاوي">درس برسيم مسقاوي</option>
+        <option value="يوريا">يوريا</option>
+        <option value="خميرة">خميرة</option>
+        <option value="كسب عباد شمس غير مقشور">كسب عباد شمس غير مقشور</option>
+        <option value="كسب بذور القطن غير مقشور">كسب بذور القطن غير مقشور</option>
+        <option value="كسب فول صويا 48%">كسب فول صويا 48%</option>
+        <option value="كسب فول صويا 44%">كسب فول صويا 44%</option>
+        <option value="بذور فول صويا مبثوقة">بذور فول صويا مبثوقة</option>
+        <option value="بذور كتان">بذور كتان</option>
+        <option value="بذور فول صويا">بذور فول صويا</option>
+        <option value="بذور قطن كاملة">بذور قطن كاملة</option>
+        <option value="رجيع كون">رجيع كون</option>
+        <option value="زوائد طحن قمح">زوائد طحن قمح</option>
+        <option value="نخالة قمح">نخالة قمح</option>
+        <option value="جلوتوفيد 16%">جلوتوفيد 16%</option>
+        <option value="جلوتوفيد 20%">جلوتوفيد 20%</option>
+        <option value="جلوتوفيد ذرة 40%">جلوتوفيد ذرة 40%</option>
+        <option value="جلوتوفيد ذرة 60%">جلوتوفيد ذرة 60%</option>
+        <option value="شعير 6 صف">شعير 6 صف</option>
+        <option value="شعير 2 صف">شعير 2 صف</option>
+        <option value="سورجم">سورجم</option>
+        <option value="أذرة رفيعة">أذرة رفيعة</option>
+        <option value="أذرة شامية">أذرة شامية</option>
+        <option value="أذرة صفراء">أذرة صفراء</option>
+    </select>
+    
+    <input type="hidden" id="selectedValuesInput" name="selectedValues">
+
+    <div class="selected-values" id="selectedValues"></div>
+    <br>
+<% } %>
+
+    <button type="submit">حساب</button>
+</form>
+
+<% if (typeof proteinResult !== "undefined") { %>
+    <div class="result-container" dir="rtl">
+      <h2 class="result-title">النتيجة:</h2>
+      <% if (typeof fattening !== 'undefined') { %>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>وزن الحيوان</th>
+                            <th>معدل الزيادة</th>
+                            <th>الطاقة الكلية</th>
+                            <th>البروتين الكلي</th>
+                            <th>كمية العلف</th>
+                            <th>العلف الخشن</th>
+                            <th>العلف المركز</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr class="fodder-row">
+                                <td><%=(proteinResult.weight).toFixed(2) %></td>
+                                <td><%=(rate).toFixed(3) %></td>
+                                <td><%=proteinResult.totalPower %>SV <br> <%=(proteinResult.totalPower * 3761).toFixed(2) %>cal</td>
+                                <td><%=proteinResult.totalProtein %></td>
+                                <td><%=proteinResult.totalFodder %></td>
+                                <td><%=proteinResult.coarseFodder %></td>
+                                <td><%=proteinResult.ConcentratedFodder %></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <br>
+        <% if (typeof fodderAmount !== "undefined") { %>
+            <table class="fodder-table">
+                <thead>
+                    <tr>
+                        <th>نوع العلف</th>
+                        <th>كمية العلف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% data.forEach(function(item) { %>
+                        <tr class="fodder-row">
+                            <td><%= item.type %>
+                                <% if (item.type ==="برسيم") { %>
+                                      <%= proteinResult.coarseFodder * 100/15 %> KG
+                                <% } %>
+                                <% if (item.type ==="دراوة") { %>
+                                      <%= proteinResult.coarseFodder * 100/20 %> KG
+                                <% } %>
+                            </td>
+                            <td><%= item.amount %> KG</td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>        
+        <% } %>
+      <% } %>
+      <% if (typeof milking !== 'undefined') { %>
+                <table class="result-table">
+                    <thead>
+                        <tr style="background-color: #a89393">
+                            <th>متوسط الادرار</th>
+                            <th>نسبة الدهن في اللبن</th>
+                            <th>كمية العلف</th>
+                            <th>الطاقة الحافظة</th>
+                            <th>الطاقة الانتاجية</th>
+                            <th>الطاقة الكلية</th>
+                            <th>البرويتن الحافظ</th>
+                            <th>البروتين الانتاجي</th>
+                            <th>البروتين الكلي</th>
+                            <th>العلف الخشن</th>
+                            <th>العلف المركز</th>
+                            <th>vitA</th>
+                            <th>vitB</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr class="fodder-row">
+                                <td><%=avg_yield %></td>
+                                <td><%=proteinResult.fat_percentage %></td>
+                                <td><%=proteinResult.totalFodder %></td>
+                                <td><%=proteinResult.preservativeEnergy %>SV <br> <%=(proteinResult.preservativeEnergy * 3761).toFixed(2) %>cal</td>
+                                <td><%=proteinResult.productiveEnergy %>SV <br><%=(Math.round(proteinResult.productiveEnergy * 3761 * 100) / 100).toFixed(2) %>cal</td>
+                                <td><%=(proteinResult.totalEnergy).toFixed(2)%>SV<br>  <%= (proteinResult.totalEnergy * 3761).toFixed(2) %>cal</td>                                
+                                <td><%=proteinResult.preservativeProtein %>G</td>
+                                <td><%=proteinResult.productiveProtein %>G</td>
+                                <td><%=(proteinResult.totalProtein).toFixed(2) %>G</td>
+                                <td><%=proteinResult.coarseFodder %></td>
+                                <td><%=proteinResult.ConcentratedFodder %></td>
+                                <td><%=proteinResult.vitA %></td>
+                                <td><%=proteinResult.vitB %></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <br>
+        <% if (typeof fodderAmount !== "undefined") { %>
+                <table class="fodder-table">
+                    <thead>
+                        <tr>
+                            <th>نوع العلف</th>
+                            <th>كمية العلف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach(function(item) { %>
+                            <tr class="fodder-row">
+                                <td><%= item.type %> <% if (typeof clover !=="undefined") { %>
+                                    
+                                <% } %></td>
+                                <td><%= item.amount %> KG</td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>        
+        <% } %>
+    <% } %>
+    
+<% } %>
+
+  <script>
+    function handleOptionChange() {
+      var select = document.getElementById("mySelect");
+      var inputPairCow = document.getElementById("pair_cow_id");
+      var inputPairManually = document.getElementById("pair_manually");
+
+      if (select.value === "كود") {
+        inputPairCow.style.display = "block";
+        inputPairManually.style.display = "none";
+      } else if (select.value === "يدوي") {
+        inputPairManually.style.display ="block"
+        inputPairCow.style.display = "none";
+
+      }
+    }
+    var dropdown = document.getElementById("dropdown");
+    var selectedValues = [];
+    var selectedValuesInput = document.getElementById("selectedValuesInput")
+    dropdown.addEventListener("change", function () {
+        var selectedOptions = Array.from(dropdown.selectedOptions).map(function (option) {
+            return option.value;
+        });
+
+        // Add selected values to the array
+        selectedOptions.forEach(function (value) {
+            if (!selectedValues.includes(value)) {
+                selectedValues.push(value);
+            }
+        });
+
+        // Update the displayed selected values
+        displaySelectedValues();
+    });
+
+    function displaySelectedValues() {
+        var selectedValuesContainer = document.getElementById("selectedValues");
+        selectedValuesContainer.innerHTML = "";
+
+        selectedValues.forEach(function (value) {
+            var valueElement = document.createElement("div");
+            valueElement.classList.add("selected-value");
+            valueElement.textContent = value;
+
+            var removeButton = document.createElement("span");
+            removeButton.classList.add("selected-value-remove");
+            removeButton.textContent = "x";
+            removeButton.dataset.value = value;
+
+            removeButton.addEventListener("click", function () {
+                var valueToRemove = this.dataset.value;
+                removeSelectedValue(valueToRemove);
+            });
+
+            valueElement.appendChild(removeButton);
+            selectedValuesContainer.appendChild(valueElement);
+
+            selectedValuesInput.value = selectedValues.join(",");
+        });
+    }
+
+    function removeSelectedValue(value) {
+        var index = selectedValues.indexOf(value);
+        if (index > -1) {
+            selectedValues.splice(index, 1);
+            displaySelectedValues();
+        }
+    }
+</script>
+</body>
+
+</html>

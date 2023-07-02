@@ -1,17 +1,39 @@
+const dietController = require("../controller/dietController")
 const express = require("express")
 const router = express.Router()
 
+router
+  .route("/fattening_fodder")
+  .get((req, res) => {
+    res.render("dietAddCowDet", {
+      fattening: true,
+      endpoint: "fattening_fodder",
+    })
+  })
+  .post(dietController.getFodderInfo)
+router
+  .route("/fattening_fodder/ingredient")
+  .get(dietController.getFodderIngredientRouter)
+  .post(dietController.getFodderIngredient)
+
+// milking
+
+router
+  .route("/milking_fodder")
+  .get((req, res) => {
+    res.render("dietAddCowDet", {
+      milking: true,
+      endpoint: "milking_fodder",
+    })
+  })
+  .post(dietController.getMilkingInfo)
+router
+  .route("/milking_fodder/ingredient")
+  .get(dietController.getMilkingIngredientRouter)
+  .post(dietController.getMilkingFodderIngredient)
+
 router.get("/", (req, res) => {
-  const options = [
-    { id: "option1", value: "option1", label: "Option 1", color: "#ff0000" },
-    { id: "option2", value: "option2", label: "Option 2", color: "#00ff00" },
-    { id: "option3", value: "option3", label: "Option 3", color: "#0000ff" },
-  ]
-
-  // Get the selected options (in this example, option1 and option3 are selected)
-  const selectedOptions = ["option1", "option3"]
-
-  // Render the checkboxes.ejs template with the options and selected options
-  res.render("dietPage", { options, selectedOptions })
+  res.render("dietHomePage")
 })
+
 module.exports = router

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>العليقة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-image: url('/ingradent.jpeg');
+            background-size: cover;
+
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            direction: rtl;
+            text-align: right;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            padding: 20px 40px;
+            margin: 15px;
+            font-size: 18px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #45a049;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="location.href='http://localhost:3000/home'">رجوع</button>
+
+    <div class="button-container">
+        <a href="/diets/fattening_fodder" class="button">عليقة تسمين</a>
+        <a href="/diets/milking_fodder" class="button">عليقة لبن</a>
+    </div>
+</body>
+</html>

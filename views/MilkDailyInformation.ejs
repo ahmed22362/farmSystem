@@ -6,18 +6,41 @@
         body {
             font-family: Arial, sans-serif;
             text-align: right;
+            direction: rtl;
             background-color: #f4f4f4;
             padding: 20px;
+            <% if (typeof weight !== 'undefined' ){ %>
+                background-image: url('/weight.jpg');
+            <% } else if (typeof fodder !== 'undefined' ){ %>
+                background-image: url('/addFodder.jpeg');
+            <% } else if (typeof milking !== 'undefined' ){ %>
+                background-image: url('/addMilking.jpeg');
+            <% } else if (typeof reproduction !== 'undefined' ){ %>
+                background-image: url('/reproducionInfromation.jpeg');
+            <% } %>
+            background-size:cover;
+
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
         }
-
+        div.form
+        {
+            display: block;
+            text-align: center;
+        }
+        form
+        {
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: right;
+            direction: rtl;
+        }
         form {
-            max-width: 400px;
-            margin: 0 auto;
+            width: 500px;
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
@@ -66,11 +89,15 @@
 </head>
 <body>
   <% if (typeof weight !== 'undefined' ){ %>
-    <h1>إضافة وزن بقرة </h1>
+    <h1 style="color: black;">إضافة وزن بقرة </h1>
   <% } else if (typeof fodder !== 'undefined' ){ %>
     <h1>إضافة كمية العلف المأكولة لبقرة </h1>
+  <% } else if (typeof milking !== 'undefined' ){ %>
+    <h1 style="color: black;">إضافة بيانات حلبة </h1>
+  <% } else if (typeof reproduction !== 'undefined' ){ %>
+    <h1>إضافة بيانات تناسل </h1>
   <% } %>
-
+<div class="form">
     <form action="/milk_cows/<%=route%>/add" method="post">
 
 
@@ -85,10 +112,13 @@
         <% } else if (typeof fodder !== 'undefined'){ %>   
             <label for="cow_id">:كود البقرة</label>
             <textarea type="text" class="right-aligned" rows="1"  name="cow_id" required></textarea><br>
-            <label for="fodder_amount">:كمية العلفة المأكولة</label>
-            <input type="number" class="right-aligned"  name="fodder_amount" required><br>
+            <label for="fodder_amount">:العلف المركز</label>
+            <input type="number" class="right-aligned"  name="concentrated_feed" required><br>
+            <label for="fodder_amount">:العلف خشن</label>
+            <input type="number" class="right-aligned"  name="coarse_fodder" required><br>
             <label for="feeding_date">:تاريخ اليوم</label>
             <input type="date" class="right-aligned"  name="feeding_date" required><br>
+            <br>
             <br>
         <% } else if (typeof milking !== 'undefined'){ %>   
             <label for="cow_id">:كود البقرة</label>
@@ -98,25 +128,39 @@
             <label for="milking_datetime">:وقت الحلب</label>
             <input type="datetime-local" class="right-aligned"  name="milking_datetime" required><br>
             <br>
+            <label for="length_of_dry_period">:طول فترة الجفاف</label>
+            <input type="number" class="right-aligned"  name="length_of_dry_period" required><br>
+            <label for="milk_season_number">:ترتيبة موسم الحليب</label>
+            <input type="number" class="right-aligned"  name="milk_season_number" required><br>
+            <label for="fat_percentage">:نسبة الدهن في اللبن</label>
+            <input type="number" class="right-aligned"  name="fat_percentage" required><br>
+            <br>
         <% } else if (typeof reproduction !== 'undefined'){ %>   
             <label for="cow_id">:كود البقرة</label>
             <textarea type="text" class="right-aligned" rows="1"  name="cow_id" required></textarea><br>
-            <label for="code_of_pollinated_animal">:كود الحيوان الملقح</label>
+            <label for="code_of_pollinated_animal">:كود الطلوقة</label>
             <input type="text" class="right-aligned"  name="code_of_pollinated_animal" required><br>
             <br>
             <label for="number_of_pollination">:عدد مرات التلقيح</label>
             <input type="number" class="right-aligned"  name="number_of_pollination" required><br>
+            <label for="number_of_movement">:عدد الحركات في اليوم</label>
+            <input type="number" class="right-aligned"  name="number_of_movement" required><br>
             <label for="number_of_births">:عدد مرات الولادة</label>
             <input type="number" class="right-aligned"  name="number_of_births" required><br>
             <label for="date_of_births">:تاريخ الولادة</label>
             <input type="date" class="right-aligned"  name="date_of_births" required><br>
-            <label for="date_of_estrus">:ميعاد الشياع</label>
+            <label for="number_of_estrus">:عدد مرات الشياع</label>
+            <input type="number" class="right-aligned"  name="number_of_estrus" required><br>
+            <label for="date_of_estrus">:تاريخ الشياع</label>
             <input type="date" class="right-aligned"  name="date_of_estrus" required><br>
-            <label for="date_of_insemination">:ميعاد التخصيب</label>
+            <label for="date_of_insemination">:تاريخ التلقيح</label>
             <input type="date" class="right-aligned"  name="date_of_insemination" required><br>
+            <label for="date_of_first_ovulation_after_birth">:تاريخ اول شياع بعد الولادة</label>
+            <input type="date" class="right-aligned"  name="date_of_first_ovulation_after_birth" required><br>
             <br>
         <% } %>
         <button type="submit">إضافة</button>
     </form>
+</div>
 </body>
 </html>
