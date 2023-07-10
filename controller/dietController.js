@@ -94,7 +94,7 @@ exports.getMilkingInfo = async (req, res) => {
   data.cowCode = req.body.weight
   let avg_yield = req.body.avg_yield
   let fat_percentage = req.body.fat_percentage
-  if (fat_percentage) {
+  if (Array.isArray(fat_percentage)) {
     fat_percentage = fat_percentage.filter(Boolean)
   }
   data.fatPer = fat_percentage[0]
